@@ -21,8 +21,20 @@ fi
 # Vérifier si le port 8000 est disponible
 PORT=8000
 if lsof -i:$PORT &>/dev/null; then
-    echo "Le port $PORT est déjà utilisé. Fin du script."
-    exit 1
+    echo "Un serveur utilise déjà le port $PORT."
+    
+    # Demander à l'utilisateur s'il souhaite arrêter le serveur existant
+    read -p "Souhaitez-vous arrêter le serveur en cours ? (y/n) : " CHOICE
+    if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
+        # Trouver le PID du processus et le tuer
+        SERVER_PID=$(lsof -ti:$PORT)
+        echo "Arrêt du serveur avec PID $SERVER_PID..."
+        kill -9 $SERVER_PID
+        echo "Le serveur a été arrêté."
+    else
+        echo "Fin du script. Aucune action n'a été effectuée."
+        exit 1
+    fi
 else
     echo "Le port $PORT est disponible."
 fi
