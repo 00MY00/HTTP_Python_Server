@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Script pour créer un serveur HTTP Python pour le transfert de fichiers
+# Script pour gérer un serveur HTTP Python
+
 # Vérifier si /tmp existe
 if [ -d "/tmp" ]; then
     echo "Le répertoire /tmp existe."
@@ -18,25 +19,26 @@ else
     exit 1
 fi
 
-# Vérifier si le port 8000 est disponible
+# Définir le port utilisé pour le serveur
 PORT=8000
-SERVER_PID=$(lsof -ti:$PORT)
+
+# Vérifier s'il existe déjà une instance de serveur HTTP Python
+SERVER_PID=$(ps aux | grep "[p]ython3 -m http.server $PORT" | awk '{print $2}')
 
 if [ -n "$SERVER_PID" ]; then
-    echo "Un serveur utilise déjà le port $PORT (PID : $SERVER_PID)."
-    
-    # Demander à l'utilisateur s'il souhaite arrêter le serveur existant
-    read -p "Souhaitez-vous arrêter le serveur en cours ? (y/n) : " CHOICE
+    echo "Un serveur HTTP Python est déjà en cours d'exécution sur le port $PORT (PID : $SERVER_PID)."
+    read -p "Souhaitez-vous arrêter ce serveur ? (y/n) : " CHOICE
+
     if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
         echo "Arrêt du serveur avec PID $SERVER_PID..."
         kill -9 $SERVER_PID
         echo "Le serveur a été arrêté."
     else
-        echo "Fin du script. Le port $PORT est toujours occupé."
-        exit 1
+        echo "Le serveur existant reste actif. Fin du script."
+        exit 0
     fi
 else
-    echo "Le port $PORT est disponible."
+    echo "Aucun serveur HTTP Python n'est actuellement en cours d'exécution sur le port $PORT."
 fi
 
 # Obtenir l'adresse IP locale
@@ -45,18 +47,18 @@ LOCAL_IP=$(hostname -I | awk '{print $1}')
 # Optionnel : Obtenir l'adresse IP publique
 PUBLIC_IP=$(curl -s ifconfig.me)
 
-# Lancer le serveur HTTP Python
+# Lancer un nouveau serveur HTTP Python
 echo "Démarrage du serveur HTTP Python sur le port $PORT..."
 python3 -m http.server $PORT &
 
 # Attendre un moment pour s'assurer que le serveur démarre
 sleep 2
 
-# Vérifier si le serveur est bien lancé
-SERVER_PID=$(lsof -ti:$PORT)
+# Vérifier si le serveur a bien démarré
+NEW_SERVER_PID=$(ps aux | grep "[p]ython3 -m http.server $PORT" | awk '{print $2}')
 
-if [ -n "$SERVER_PID" ]; then
-    echo "Le serveur HTTP Python est en cours d'exécution (PID : $SERVER_PID)."
+if [ -n "$NEW_SERVER_PID" ]; then
+    echo "Le serveur HTTP Python est en cours d'exécution (PID : $NEW_SERVER_PID)."
     echo "URL locale : http://$LOCAL_IP:$PORT"
     if [ -n "$PUBLIC_IP" ]; then
         echo "URL publique : http://$PUBLIC_IP:$PORT"
