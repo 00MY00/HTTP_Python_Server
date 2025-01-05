@@ -33,6 +33,8 @@ if [ -n "$SERVER_PID" ]; then
         echo "Arrêt du serveur avec PID $SERVER_PID..."
         kill -9 $SERVER_PID
         echo "Le serveur a été arrêté."
+        echo "Fin du script."
+        exit 0
     else
         echo "Le serveur existant reste actif. Fin du script."
         exit 0
@@ -40,12 +42,6 @@ if [ -n "$SERVER_PID" ]; then
 else
     echo "Aucun serveur HTTP Python n'est actuellement en cours d'exécution sur le port $PORT."
 fi
-
-# Obtenir l'adresse IP locale
-LOCAL_IP=$(hostname -I | awk '{print $1}')
-
-# Optionnel : Obtenir l'adresse IP publique
-PUBLIC_IP=$(curl -s ifconfig.me)
 
 # Lancer un nouveau serveur HTTP Python
 echo "Démarrage du serveur HTTP Python sur le port $PORT..."
@@ -58,6 +54,12 @@ sleep 2
 NEW_SERVER_PID=$(ps aux | grep "[p]ython3 -m http.server $PORT" | awk '{print $2}')
 
 if [ -n "$NEW_SERVER_PID" ]; then
+    # Obtenir l'adresse IP locale
+    LOCAL_IP=$(hostname -I | awk '{print $1}')
+
+    # Optionnel : Obtenir l'adresse IP publique
+    PUBLIC_IP=$(curl -s ifconfig.me)
+
     echo "Le serveur HTTP Python est en cours d'exécution (PID : $NEW_SERVER_PID)."
     echo "URL locale : http://$LOCAL_IP:$PORT"
     if [ -n "$PUBLIC_IP" ]; then
