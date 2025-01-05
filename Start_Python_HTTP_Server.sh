@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Script to reat a python HTTP server to help files transfèr to the victim
 
+# Script to reat a python HTTP server to help files transfèr to the victim
 # Vérifier si /tmp existe
 if [ -d "/tmp" ]; then
     echo "Le répertoire /tmp existe."
