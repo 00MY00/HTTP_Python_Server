@@ -10,6 +10,10 @@ ROOT_DIR="/tmp/http_root"
 Root= $PWD
 
 
+echo "Voulez-vous afficher l'IP Public ? (y/N)"
+read -r CHOICE
+
+
 if [ ! -d "$ROOT_DIR" ]; then
     echo "Création du dossier racine du serveur : $ROOT_DIR"
     mkdir "$ROOT_DIR"
@@ -74,10 +78,15 @@ if [ -n "$NEW_SERVER_PID" ]; then
 
     echo "Le serveur HTTP Python est en cours d'exécution (PID : $NEW_SERVER_PID)."
     echo "URL locale : http://$LOCAL_IP:$PORT"
-    if [ -n "$PUBLIC_IP" ]; then
-        echo "URL publique : http://$PUBLIC_IP:$PORT"
+    if [[ "$CHOICE" == "y" || "$CHOICE" == "Y" ]]; then
+        PUBLIC_IP=$(curl -s ifconfig.me)
+        if [ -n "$PUBLIC_IP" ]; then
+            echo "Votre IP publique est : $PUBLIC_IP"
+        else
+            echo "Impossible de récupérer l'IP publique."
+        fi
     else
-        echo "Impossible de déterminer l'adresse IP publique."
+        echo "Affichage de l'IP publique annulé."
     fi
 
     # Tâche automatique pendant que le serveur est actif
