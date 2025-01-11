@@ -93,7 +93,7 @@ if [ -n "$NEW_SERVER_PID" ]; then
                 echo "Exécution de Task.sh..."
                 bash "$Root/assets/Task.sh"
             else
-                echo "Le script Task.sh est introuvable dans $Root."
+                echo "Le script Task.sh est introuvable dans '$Root/assets/Task.sh'."
             fi
             
             # Intervalle entre chaque exécution
