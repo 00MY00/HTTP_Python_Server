@@ -7,7 +7,7 @@ PORT=8000
 
 # Créer un dossier spécifique dans /tmp comme racine du serveur
 ROOT_DIR="/tmp/http_root"
-Root0= $($PWD)
+Root0="$PWD"
 
 
 
