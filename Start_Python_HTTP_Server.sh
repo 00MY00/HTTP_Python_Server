@@ -10,8 +10,7 @@ ROOT_DIR="/tmp/http_root"
 Root= $PWD
 
 
-echo "Voulez-vous afficher l'IP Public ? (y/N)"
-read -r CHOICE
+
 
 
 if [ ! -d "$ROOT_DIR" ]; then
@@ -58,6 +57,15 @@ if [ -n "$SERVER_PID" ]; then
 else
     echo "Aucun serveur HTTP Python n'est actuellement en cours d'exécution sur le port $PORT."
 fi
+
+
+
+# Afficher ou non l'IP public
+echo "Voulez-vous afficher l'IP Public ? (y/N)"
+read -r CHOICE
+
+
+
 
 # Lancer un nouveau serveur HTTP Python avec le dossier racine spécifié
 echo "Démarrage du serveur HTTP Python dans le dossier $ROOT_DIR sur le port $PORT..."
