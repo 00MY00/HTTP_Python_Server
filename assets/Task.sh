@@ -20,6 +20,12 @@ for FILE in "$ROOT_DIR"/*; do
         continue
     fi
 
+    # Ignorer le fichier server.log
+    if [[ "$(basename "$FILE")" == "server.log" ]]; then
+        echo "$(date): Le fichier \"$LOG_FILE\" est ignoré." >> "$LOG_FILE"
+        continue
+    fi
+
     # Extraire le nom de fichier
     FILENAME=$(basename "$FILE")
 
@@ -32,10 +38,12 @@ for FILE in "$ROOT_DIR"/*; do
     # Calculer le hash MD5 du fichier
     MD5_HASH=$(md5sum "$FILE" | awk '{print $1}')
 
-    # Renommer le fichier en ajoutant 'MD5=<hash>'
+    # Renommer le fichier en ajoutant 'MD5=<hash>', remplaçant l'original
     NEW_FILENAME="${FILENAME}_MD5=${MD5_HASH}"
-    mv "$FILE" "$ROOT_DIR/$NEW_FILENAME"
-    echo "$(date): Le fichier \"$FILENAME\" a été renommé en \"$NEW_FILENAME\"." >> "$LOG_FILE"
+    NEW_FILE_PATH="$ROOT_DIR/$NEW_FILENAME"
+
+    mv "$FILE" "$NEW_FILE_PATH"
+    echo "$(date): Le fichier \"$FILENAME\" a été renommé et remplacé par \"$NEW_FILENAME\"." >> "$LOG_FILE"
 done
 
 echo "$(date): Fin de la vérification des fichiers dans $ROOT_DIR." >> "$LOG_FILE"
