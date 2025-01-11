@@ -7,7 +7,7 @@ PORT=8000
 
 # Créer un dossier spécifique dans /tmp comme racine du serveur
 ROOT_DIR="/tmp/http_root"
-Root= $PWD
+Root0= $($PWD)
 
 
 
@@ -106,11 +106,11 @@ if [ -n "$NEW_SERVER_PID" ]; then
             echo "$(date): Le serveur est actif (PID : $NEW_SERVER_PID)" >> "$ROOT_DIR/server.log"
             
             # Exécuter le script Task.sh
-            if [ -f "$Root/assets/Task.sh" ]; then
+            if [ -f "$Root0/assets/Task.sh" ]; then
                 echo "Exécution de Task.sh..."
-                bash "$Root/assets/Task.sh"
+                bash "$Root0/assets/Task.sh"
             else
-                echo "Le script Task.sh est introuvable dans '$Root/assets/Task.sh'."
+                echo "Le script Task.sh est introuvable dans '$Root0/assets/Task.sh'."
             fi
             
             # Intervalle entre chaque exécution
